@@ -1,0 +1,132 @@
+\documentclass[usletter]{article}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{scribe}
+\usepackage{mathpazo}
+
+\usepackage[margin=1.5in]{geometry}
+\linespread{1.2}
+
+\newcommand{\reals}{\mathbb{R}}
+\providecommand\rbrac[1]{\ensuremath \left(#1\right)}
+\providecommand\sqbrac[1]{\ensuremath \left[#1\right]}
+\providecommand\cbrac[1]{\ensuremath \left\{#1\right\}}
+\providecommand{\oor}{\vee}
+\providecommand{\aand}{\wedge}
+\providecommand{\bigo}{O}
+
+\newcommand{\X}{X}
+\newcommand{\Y}{Y}
+\newcommand{\rk}{\mathrm{rk}}
+\newcommand{\mf}{(M_f)}
+\newcommand{\df}{D(f)}
+\newcommand{\nf}{N(f)}
+\newcommand{\cf}{C(f)}
+\newcommand{\disj}{\mathrm{DISJ}}
+\newcommand{\ndisj}{\neq \mathrm{DISJ}}
+
+% hyperref
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage[bookmarks=true]{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor = violet,
+    citecolor = brown,
+    filecolor = magenta,
+    urlcolor = blue
+% use hidelinks option in hyperref to get black
+}
+\usepackage{url, cite}
+
+\setlength{\marginparwidth}{1in}
+\newcommand{\pc}[2]{{\color{brown} #1}\marginpar{\tiny\noindent{\raggedright{\color{ForestGreen}[PC]}\color{brown}{ #2} \par}}}
+\newcommand{\todo}[1]{{\color{gray}#1}\marginpar{\tiny\noindent{\raggedright{\color{ForestGreen}[MILD TODO]}}}}
+
+
+\begin{document}
+
+
+\makeheader{Pratik Chaudhari}               % your name
+           {October 20, 2014}               % lecture date
+           {5}                              % lecture number
+           {Log-rank conjecture and non-deterministic complexity}   % lecture title
+
+\noindent
+--- summary ----
+
+
+\section{Log-rank conjecture}
+\label{sec:log_rank}
+
+We start the lecture with a discussion on the log-rank conjecture. We have already seen that rank of the characteristic matrix $\mf$ of a function $f : \X \times \Y \to \cbrac{0,1}$ is a very good lower-bound on the deterministic communication complexity $\df$. A prominent conjecture however is the following which states that $\df$ is essentially upper-bounded by the log-rank of $\mf$.
+
+\begin{conjecture}
+\label{conj:log_rank}
+For some constant $c > 0$, for all functions $f$,
+$$
+\log \rk \mf \leq \df \leq \sqbrac{\log \rk \mf}^c + c.
+$$
+\end{conjecture}
+\begin{remark}
+The original conjecture was proposed with $c=1$. However we will see today that $c$ is essentially large. In particular we shall prove that $\df \geq \sqbrac{\log \rk \mf}^{1.58}$.
+
+Note that we have already proved the first inequality in previous classes, the second inequality on the other hand is a hard open problem in the field. To put things into perspective, we proved in the last lecture that
+$$
+\df \leq \rk_\reals \mf + 1
+$$
+which is an exponentially-worse upper bound than what the conjecture claims.
+\end{remark}
+
+Let us introduce the following theorem which quantifies the above discussion.
+\begin{theorem}
+\label{thm:log_rank_bound}
+There is a function $f: \cbrac{0,1}^n \times \cbrac{0,1}^n \to \cbrac{0,1}$ such that
+$$
+\df = \Omega(n) \qquad \mathrm{but},
+$$
+$$
+\log \rk \mf \leq \bigo\rbrac{n^{\frac{1}{1.58\ldots}}}.
+$$
+\end{theorem}
+\begin{remark}
+First note that the above theorem implies $\df \geq \sqbrac{\log \rk \mf}^{1.58\ldots}$ which means that the constant $c$ in Conj.~\ref{conj:log_rank} is greater than $1.58$. To prove this theorem, we will construct a ``gadget'' and compose it with itself many times to construct a complicated function which will give us the above bounds.
+\end{remark}
+\begin{proof}
+Define a real-valued polynomial with three binary inputs $h : \cbrac{0,1}^3 \to {0,1}$ as
+$$
+h(z_1, z_2, z_3) = z_1 + z_2 + z_3 - z_1 z_2 - z_2 z_3 - z_1 z_3.
+$$
+Note that $h$ is symmetric with respect to its arguments. We can now see that if exactly one of the $z$s is 1, $h = 1$, if exactly two $z$s are 1, we have $h = 1$. For all other cases, $h = 0$. In order words,
+$$
+h(z_1, z_2, z_3) = 
+\begin{cases}
+1 & \quad \mathrm{if}\ z_1 + z_2 + z_3 = 1\\
+0 & \quad \mathrm{otherwise}.
+\end{cases}
+$$
+Define a recursive function $H_d$ as shown in Fig.~\ref{fig:Hd}. To construct $H_d$, compose $h$ with itself $d$ times. In more cumbersome notation,
+$$
+H_d = h(H_{d-1}, H_{d-1}, H_{d-1})
+$$
+with $H_0 = h$. Thus, $H_d$ has $3^d$ leaves. We can also compute $H_d$ for a few special cases which we need, the others we do not care for.
+$$
+H_d(z_1, z_2, \ldots, z_{3^d}) =
+\begin{cases}
+1 & \quad \mathrm{if}\ \sum_{i} z_i = 1\\
+0 & \quad \mathrm{if}\ \sum_{i} z_i = 0\\
+\mathrm{don't care} & \quad \mathrm{otherwise}.
+\end{cases}
+$$
+Let $f(x,y) = H_d(x \aand y)$, i.e., the length of the inputs of Alice and Bob, $n = 3^d$. \pc{Note that this is the set-disjointness problem}{}
+
+To prove this theorem we will use a result which we have not proved yet, viz., for the disjointness problem $\disj_n$. This problem is really one of the cornerstones in the theory communication complexity and plays a large role in deriving important results. Well, in any case, we use the fact that $\df \geq \Omega(3^d)$ if $f = \disj_n$.
+
+\end{proof}
+
+\bibliographystyle{abbrv}
+\bibliography{lec5}
+
+\end{document}
