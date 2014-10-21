@@ -8,7 +8,7 @@
 \usepackage{mathpazo}
 
 \usepackage[margin=1.5in]{geometry}
-\linespread{1.2}
+\linespread{1.1}
 
 \newcommand{\reals}{\mathbb{R}}
 \providecommand\rbrac[1]{\ensuremath \left(#1\right)}
@@ -21,7 +21,7 @@
 \newcommand{\X}{X}
 \newcommand{\Y}{Y}
 \newcommand{\rk}{\mathrm{rk}}
-\newcommand{\mf}{(M_f)}
+\newcommand{\mf}{M_f}
 \newcommand{\df}{D(f)}
 \newcommand{\nf}{N(f)}
 \newcommand{\cf}{C(f)}
@@ -67,32 +67,32 @@ We start the lecture with a discussion on the log-rank conjecture. We have alrea
 \label{conj:log_rank}
 For some constant $c > 0$, for all functions $f$,
 $$
-\log \rk \mf \leq \df \leq \sqbrac{\log \rk \mf}^c + c.
+\log \rk (\mf) \leq \df \leq \sqbrac{\log \rk (\mf)}^c + c.
 $$
 \end{conjecture}
 \begin{remark}
-The original conjecture was proposed with $c=1$. However we will see today that $c$ is essentially large. In particular we shall prove that $\df \geq \sqbrac{\log \rk \mf}^{1.58}$.
+The original conjecture was proposed with $c=1$. However we will see today that $c$ is essentially large. In particular we shall prove that $\df \geq \sqbrac{\log \rk (\mf)}^{1.58}$.
 
-Note that we have already proved the first inequality in previous classes, the second inequality on the other hand is a hard open problem in the field. To put things into perspective, we proved in the last lecture that
+Note that we have already proved the first inequality of the conjecture in previous classes, the second inequality on the other hand is a hard open problem in the field. To put things into perspective, we proved in the last lecture that
 $$
-\df \leq \rk_\reals \mf + 1
+\df \leq \rk_\reals (\mf) + 1
 $$
 which is an exponentially-worse upper bound than what the conjecture claims.
 \end{remark}
 
 Let us introduce the following theorem which quantifies the above discussion.
-\begin{theorem}
+\begin{theorem}[Nisan and Wigderson~\cite{nisan1995rank}]
 \label{thm:log_rank_bound}
 There is a function $f: \cbrac{0,1}^n \times \cbrac{0,1}^n \to \cbrac{0,1}$ such that
 $$
 \df = \Omega(n) \qquad \mathrm{but},
 $$
 $$
-\log \rk \mf \leq \bigo\rbrac{n^{\frac{1}{1.58\ldots}}}.
+\log \rk (\mf) \leq \bigo\rbrac{n^{\frac{1}{1.58\ldots}}}.
 $$
 \end{theorem}
 \begin{remark}
-First note that the above theorem implies $\df \geq \sqbrac{\log \rk \mf}^{1.58\ldots}$ which means that the constant $c$ in Conj.~\ref{conj:log_rank} is greater than $1.58$. To prove this theorem, we will construct a ``gadget'' and compose it with itself many times to construct a complicated function which will give us the above bounds.
+First note that the above theorem implies $\df \geq \sqbrac{\log \rk (\mf)}^{1.58\ldots}$ which means that the constant $c$ in Conj.~\ref{conj:log_rank} is greater than $1.58$. To prove this theorem, we will construct a ``gadget'' and compose it with itself many times to construct a complicated function which will give us the above bounds.
 \end{remark}
 \begin{proof}
 Define a real-valued polynomial with three binary inputs $h : \cbrac{0,1}^3 \to {0,1}$ as
@@ -109,22 +109,66 @@ h(z_1, z_2, z_3) =
 $$
 Define a recursive function $H_d$ as shown in Fig.~\ref{fig:Hd}. To construct $H_d$, compose $h$ with itself $d$ times. In more cumbersome notation,
 $$
-H_d = h(H_{d-1}, H_{d-1}, H_{d-1})
+H_d = h(H_{d-1}, H_{d-1}, H_{d-1}); \qquad H_0 = h.
 $$
-with $H_0 = h$. Thus, $H_d$ has $3^d$ leaves. We can also compute $H_d$ for a few special cases which we need, the others we do not care for.
+$H_d$ thus has $3^d$ leaves. We can also compute $H_d$ for a few special cases which we need, the others we do not care for.
 $$
 H_d(z_1, z_2, \ldots, z_{3^d}) =
 \begin{cases}
 1 & \quad \mathrm{if}\ \sum_{i} z_i = 1\\
 0 & \quad \mathrm{if}\ \sum_{i} z_i = 0\\
-\mathrm{don't care} & \quad \mathrm{otherwise}.
+\mathrm{don't\ care} & \quad \mathrm{otherwise}.
 \end{cases}
 $$
 Let $f(x,y) = H_d(x \aand y)$, i.e., the length of the inputs of Alice and Bob, $n = 3^d$. \pc{Note that this is the set-disjointness problem}{}
 
-To prove this theorem we will use a result which we have not proved yet, viz., for the disjointness problem $\disj_n$. This problem is really one of the cornerstones in the theory communication complexity and plays a large role in deriving important results. Well, in any case, we use the fact that $\df \geq \Omega(3^d)$ if $f = \disj_n$.
+To prove this theorem we will use a result which we have not proved yet, viz., for the disjointness problem $\disj_n$. This problem is really one of the cornerstones in the theory communication complexity and plays a large role in deriving important results. Well, in any case, we use the fact that $\df \geq \Omega(n) = \Omega(3^d)$ if $f = \disj_n$, proved by Razborov~\cite{razborov1992distributional}.
 
+Why do we expect $\rk (\mf)$ to be low? Note that the degree of $h$ is 2, i.e., the degree of $H_d$ which is just $h$ composed $d$ times, is $2^d$. $h$ does not have full-degree, viz., 3.
+
+\begin{proposition}
+If $H_d = \sum_k c_k\ z_k$ where $z_k$ are monomials and $c_k$ are their coefficients, the rank $\rk (\mf)$ is at most the number of monomials $z_k$ that make up $H_d$, i.e.,
+$$
+\rk (\mf) \leq \mathrm{number\ of\ monomials\ in}\ H_d
+$$
+\end{proposition}
+\begin{proof}
+\todo{todo}
 \end{proof}
+
+\begin{proposition}
+We also have 
+$$
+\mathrm{number\ of\ monomials\ in}\ H_d \leq 6^{2^d -1}.
+$$
+\end{proposition}
+\begin{proof}
+The proof of this proposition is a simple induction argument. If $m_d$ is the number of monomials in $H_d$, note that $m_0 = 6$. In general,
+$$
+m_d \leq 3 m_{d-1} + 3 m_{d-1}^2; \qquad d = 1, 2, 3, \ldots
+$$
+Thus $m_d \leq 6 m_{d-1}^2$ which gives $m_d \leq 6^{2^d - 1}$.
+\end{proof}
+
+Together, the two propositions imply that
+\begin{align*}
+\df &\geq \Omega(3^d)\\
+& \geq \Omega \rbrac{\sqbrac{\log \rk (\mf)}^{\log 3} }.
+\end{align*}
+\end{proof}
+
+\begin{remark}
+To repeat, the above theorem implies that $c > 1.58$. Let us note that $c$ can be improved slightly, using a gadget with 7 variables instead of 3. These gadgets are typically discovered using computer search and the one with 7 variables is the best result known to us yet.
+
+A key takeaway from the development of this theorem is that the rank bound method is a very powerful method for computing the deterministic communication complexity. It works for all the problems that we (and other researchers elsewhere) have tried so far. The essential part of this program is however finding the right field to work in while computing the rank, most problems often become surprisingly easy when we use the right finite field.
+\end{remark}
+
+
+\section{Non-deterministic communication complexity}
+
+\subsection{The model}
+
+
 
 \bibliographystyle{abbrv}
 \bibliography{lec5}
