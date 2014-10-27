@@ -9,6 +9,7 @@
 
 \usepackage[margin=1.5in]{geometry}
 \linespread{1.1}
+\graphicspath{{./fig/}}
 
 \newcommand{\reals}{\mathbb{R}}
 \providecommand\rbrac[1]{\ensuremath \left(#1\right)}
@@ -77,7 +78,6 @@ $$
 \end{conjecture}
 \begin{remark}
 The original conjecture was proposed with $c=1$. However we will see today that $c$ is essentially large. In particular we shall prove that $\df \geq \sqbrac{\log \rk (\mf)}^{1.58}$.
-
 Note that we have already proved the first inequality of the conjecture in previous classes, the second inequality on the other hand is a hard open problem in the field. To put things into perspective, we proved in the last lecture that
 $$
 \df \leq \rk_\reals (\mf) + 1
@@ -194,7 +194,7 @@ $$
 $$
 \end{definition}
 \begin{remark}
-Note that we are still following the usual definition for \emph{cost of a protocol}, it is simply the depth of the protocol tree. For nondetermistic protocols, each guess node increases the depth of the tree by one. Also, note that coin tosses are costly, if we allow zero-cost coin tosses, any function $f$ will have a nondeterministic communication complexity of exactly $2$ bits. The following protocol achieves this --- Upon input $x, y$, Alice and Bob together guess some $x' \in \X$. Output $1$ if $x' = x$ and $f(x', y) = 1$ and zero otherwise. Note that Alice can check if $x' = x$, send the result to Bob who in turn computes the value of $f(x', y)$. This protocol has a cost of exactly 2 bits if Alice and Bob can guess $x'$ without any cost!
+Note that we are still following the usual definition for \emph{cost of a protocol}, it is simply the depth of the nondeterministic protocol tree. Also, note that coin tosses are costly, if we allow zero-cost coin tosses, any function $f$ will have a nondeterministic communication complexity of exactly $2$ bits. The following protocol achieves this --- Upon input $x, y$, Alice and Bob together guess some $x' \in \X$. Output $1$ if $x' = x$ and $f(x', y) = 1$ and zero otherwise. Note that Alice can check if $x' = x$, send the result to Bob who in turn computes the value of $f(x', y)$. This protocol has a cost of exactly 2 bits if Alice and Bob can guess $x'$ without any cost!
 \end{remark}
 
 \begin{proposition}
@@ -238,6 +238,16 @@ Let us discuss the problem of set intersection, denoted as $\nDISJ_n$. Given two
 \end{enumerate}
 Again, let us compute the cost of the protocol; it takes $\log n$ bits to guess an element $i$ and 2 bits for the second step of the protocol. Thus $N(\nDISJ_n) = \log n + 2$. It is intructive to verify if this is a valid nondeterministic protocol. It never gives false positives, if $A \cap B = \emptyset$, there does not exist any element $i$ that results in an output of 1 in the second step. The protocol always returns zero. Also, if $A \cap B \neq \emptyset$, a good certificate for this is simply the element that lies in both $A$ and $B$, our nondeterministic protocol guesses this element in $\log n$ bits.
 \end{example}
+
+\paragraph{Nondeterminism and covers}
+In the deterministic case, we saw the the log-rank effectively characterizes the communication complexity. In the nondeterministic case, we will see that the analogous concept is a ``cover''. Covers are more convenient combinatorial objects than partitions and the relation between covers and nondeterminism is very natural. Before we introduce notation, Fig.~\ref{fig:cover_example} shows an example cover. All the 1s in the matrix shown in Fig.~\ref{fig:cover_example} can be covered by 2 monochromatic rectangles.
+\begin{figure}
+\centering
+\includegraphics[width=0.3 \textwidth]{cover_example}
+\caption{An example cover for the characteristic matrix}
+\label{fig:cover_example}
+\end{figure}
+
 
 \bibliographystyle{abbrv}
 \bibliography{lec5}
