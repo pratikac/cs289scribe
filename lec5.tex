@@ -5,12 +5,16 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{scribe}
+
+% new packages used
 \usepackage{mathpazo}
+\usepackage{subcaption}
 
 \usepackage[margin=1.5in]{geometry}
 \linespread{1.1}
 \graphicspath{{./fig/}}
 
+% let's write a few macros to prevent carpal tunnel
 \newcommand{\reals}{\mathbb{R}}
 \providecommand\rbrac[1]{\ensuremath \left(#1\right)}
 \providecommand\sqbrac[1]{\ensuremath \left[#1\right]}
@@ -34,6 +38,9 @@
 \newcommand{\nDISJ}{\neg \mathrm{DISJ}}
 \newcommand{\EQ}{\mathrm{EQ}}
 \newcommand{\nEQ}{\neg \mathrm{EQ}}
+\renewcommand{\P}{\mathrm{P}}
+\newcommand{\NP}{\mathrm{NP}}
+\newcommand{\coNP}{\mathrm{coNP}}
 
 % hyperref
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
@@ -121,7 +128,16 @@ Define a recursive function $H_d$ as shown in Fig.~\ref{fig:Hd}. To construct $H
 $$
 H_d = h(H_{d-1}, H_{d-1}, H_{d-1}); \qquad H_0 = h.
 $$
-$H_d$ thus has $3^d$ leaves. We can also compute $H_d$ for a few special cases which we need, the others we do not care for.
+$H_d$ thus has $3^d$ leaves.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5 \textwidth]{H_d.pdf}
+\caption{$H_d$ is a function of $3^d$ inputs.}
+\label{fig:H_d}
+\end{figure}
+
+We can also compute $H_d$ for a few special cases which we need, the others we do not care for.
 $$
 H_d(z_1, z_2, \ldots, z_{3^d}) =
 \begin{cases}
@@ -137,13 +153,18 @@ To prove this theorem we will use a result which we have not proved yet, viz., f
 Why do we expect $\rk (\mf)$ to be low? Note that the degree of $h$ is 2, i.e., the degree of $H_d$ which is just $h$ composed $d$ times, is $2^d$. $h$ does not have full-degree, viz., 3.
 
 \begin{proposition}
-If $H_d = \sum_k c_k\ z_k$ where $z_k$ are monomials and $c_k$ are their coefficients, the rank $\rk (\mf)$ is at most the number of monomials $z_k$ that make up $H_d$, i.e.,
+If $H_d = \sum_S c_S\ z_S$ where $z_S$ are monomials and $c_S$ are their coefficients ($S$ runs over all subsets of $\cbrac{1, \ldots, n}$), the rank $\rk (\mf)$ is at most the number of monomials $z_S$ that make up $H_d$, i.e.,
 $$
 \rk (\mf) \leq \mathrm{number\ of\ monomials\ in}\ H_d
 $$
 \end{proposition}
 \begin{proof}
-\todo{todo}
+Note that
+\begin{align*}
+    \mf &= \sqbrac{H_d \rbrac{(x_1, y_1), \ldots, (x_n, y_n)}}\\
+    &= \sum_k \sqbrac{\sum_S c_S M_S},
+\end{align*}
+where $M_S$ is the matrix defined by $M_S(x,y) = \prod_{i \in S}\ x_i \cdot y_i$. The entries of $M_S$ where $i \notin S$ or $j \notin S$ are zero. Now for every set $S$, the rank of $M_S$ is just 1. Using the rank indentities, we can see that the rank $\rk \mf$ is bounded above by the number of non-zero monomials of $f$.
 \end{proof}
 
 \begin{proposition}
@@ -181,6 +202,23 @@ Let us now introduce nondeterministic communication complexity. This was first d
 \paragraph{The model}
 
 We know that deterministic protocols are binary trees. Each node of the tree is labeled either by a function $a_v : \X \to \cbrac{0,1}$ which corresponds to the bit sent by Alice or by a function $b_v : \Y \to \cbrac{0,1}$ which corresponds to Bob's bit. In addition to this, nondeterministic protocols have a special kind of node, a ``guess node'' which we will denote by $g_v \in \cbrac{0,1}$. At any point in the protocol execution, Alice and Bob can get together and ``publicly'' guess a value of $g_v \in \cbrac{0,1}$ upon which the protocol either moves left or right respectively in the protocol tree. An example nondeterministic protocol tree thus looks like the one shown in Fig.~\ref{fig:nondet_protocol_tree}. Note that while deterministic protocol trees have a unique path in the binary tree for a given pair of inputs $x, y$, the same is not true for nondetermistic protocols. Indeed, the power of nondeterminism lies in the fact that Alice and Bob and periodically guess together and branch.
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.3 \textwidth}
+    \includegraphics[width=\textwidth]{det_protocol.pdf}
+    \caption{}
+    \label{fig:det_protocol}
+\end{subfigure}
+\qquad \qquad
+\begin{subfigure}[b]{0.3 \textwidth}
+    \includegraphics[width=\textwidth]{nondet_protocol.pdf}
+    \caption{}
+    \label{fig:nondet_protocol}
+\end{subfigure}
+\caption{Fig.~\ref{fig:det_protocol} shows a deterministic protocol. On the other hand, Fig.~\ref{fig:nondet_protocol} depicts the protocol tree for a nondeterministic protocol with guess nodes $G$.}
+\label{fig:nondet_protocol_tree}
+\end{figure}
 
 We have thus defined the syntax of a nondeterministic protocol tree. The semantics of this are as follows:
 \begin{enumerate}
@@ -331,7 +369,8 @@ Observe that $\df = \dnf$, Alice and Bob simply output the opposite of what they
 $$
 \df \leq 2 \nf \nnf.
 $$
-We will prove this result in the next lecture.
+We will prove this in the next lecture. $\nnf$ is the co-nondeterministic communication complexity. This result thus says that either the nondeterministic or co-nondeterministic complexity of a function $f$ can be small, but not both. (Stretching the analogy with complexity theory even further) contrast this with the open problem that asks whether $\P = \NP \cap \coNP$~\cite{papadimitriou1984communication}. In the other direction, if $f$ has nondeterministic and co-nondeterministic complexity of $t$, the deterministic complexity can be at most $\bigo(t^2)$.
+
 
 \bibliographystyle{abbrv}
 \bibliography{lec5}
