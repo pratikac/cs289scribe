@@ -24,6 +24,7 @@
 \newcommand{\rk}{\mathrm{rk}}
 \newcommand{\mf}{M_f}
 \newcommand{\df}{D(f)}
+\newcommand{\dnf}{D(\neg f)}
 \newcommand{\nf}{N(f)}
 \newcommand{\nnf}{N(\neg f)}
 \newcommand{\cf}{C(f)}
@@ -61,8 +62,12 @@
            {Log-rank conjecture and nondeterministic complexity}   % lecture title
 
 \noindent
---- summary ----
 
+In this lecture, we first take a look at the log-rank conjecture. We show that the deterministic communication complexity is very strongly characterised by the log-rank of the characteristic matrix and discuss a major open problem in this area.
+
+We then introduce nondeterministic communication complexity where Alice and Bob are allowed to ``guess'' while executing the protocol. Just as we used partitions in the previous lectures to analyse deterministic complexity, we introduce covers of 1s in the characteristic matrix $\mf$; these effectively characterise the nondeterministic communication complexity of a function $f$.
+
+Lastly, we constract the two notions of complexities. In particular, we show that the gap between deterministic and nondeterministic complexity can be exponentially large. However, we also show some functions $f$ where the nondeterministic complexity is almost as large as the deterministic complexity.
 
 \section{Log-rank conjecture}
 \label{sec:log_rank}
@@ -186,7 +191,7 @@ We have thus defined the syntax of a nondeterministic protocol tree. The semanti
     \item on the other hand, if $f(x, y) = 1$, the protocol only has to output one on at least one of the executions.
 \end{enumerate}
 
-\begin{definition}
+\begin{definition}[Nondeterministic cost $N(f)$]
 \label{def:nondet_cost}
 The cost of a nondetermistic protocol is the worst case cost on any input and is equal to the sum of the number of bits exchanged and the number of coin tosses, i.e.,
 $$
@@ -240,14 +245,93 @@ Again, let us compute the cost of the protocol; it takes $\log n$ bits to guess 
 \end{example}
 
 \paragraph{Nondeterminism and covers}
-In the deterministic case, we saw the the log-rank effectively characterizes the communication complexity. In the nondeterministic case, we will see that the analogous concept is a ``cover''. Covers are more convenient combinatorial objects than partitions and the relation between covers and nondeterminism is very natural. Before we introduce notation, Fig.~\ref{fig:cover_example} shows an example cover. All the 1s in the matrix shown in Fig.~\ref{fig:cover_example} can be covered by 2 monochromatic rectangles.
+In the deterministic case, we saw that the log-rank effectively characterizes the communication complexity. In the nondeterministic case, we will see that the analogous concept is a ``cover''. Covers are more convenient combinatorial objects than partitions and the relation between covers and nondeterminism is very natural. Before we introduce notation, Fig.~\ref{fig:cover_example} shows an example cover. All the 1s in the matrix shown in Fig.~\ref{fig:cover_example} can be covered by 2 monochromatic rectangles.
 \begin{figure}
 \centering
 \includegraphics[width=0.3 \textwidth]{cover_example}
-\caption{An example cover for the characteristic matrix}
+\caption{An example cover for the characteristic matrix. The cover number $\cf$ is therefore 2.}
 \label{fig:cover_example}
 \end{figure}
 
+\begin{definition}[Cover number]
+The cover number of a function $f : \X \times \Y \to \cbrac{0,1}$, denoted by $\cf$ is the minimum number of $f$-monochromatic rectangles $R_1, R_2, \ldots$ required to cover all the 1s in the characteristic matrix $\mf$, i.e.,
+$$
+\cup R_i = f^{-1}(1).
+$$
+\end{definition}
+Note that $R_i$s in the above definition may overlap, we simply require that their union be $f^{-1}(1)$. The following theorem now effectively characterises the nondeterministic communication complexity in terms of the cover number.
+
+Note that we have not explicitly stated the notion of a rectangle for nondeterministic protocols. There are two ways to see this and they are equivalent. One can simply consider the characteristic matrix $\mf$ and an $f$-monochromatic rectangle $R$ is a set which can be written as a product of two sets $R_X \times R_Y$ where $R_X = \cbrac{ x\ |\ \exists\ y\ \mathrm{s.t.}\ (x,y) \in R}$ and $R_Y = \cbrac{ y\ |\ \exists\ x\ \mathrm{s.t.}\ (x,y) \in R}$. Alternatively, consider two input pairs $(x,y)$ and $(x', y')$. Let the guesses for Alice and Bob for these two pairs be $(z_1, z_2)$ for input $(x,y)$ and $(z_1', z_2')$ for input $(x',y')$ respectively. \pc{If $(x,y), (x',y') \in f^{-1}(1)$, there exist}{}
+
+\begin{theorem}
+For all functions $f$,
+$$
+\log \cf \leq \nf \leq \log \cf + 3.
+$$
+\end{theorem}
+\begin{proof}
+Let us prove the second inequality first. If $c = \cf$, let $R_1, \ldots, R_c$ be a cover for 1s in $\mf$. Here is a protocol for computing $f$.
+\begin{enumerate}
+    \item Guess the index of rectangle $i$;
+    \item Output
+        $$
+            \begin{cases}
+            1 & \mathrm{if}\ (x,y) \in R_i;\\
+            0 & \mathrm{else.}
+            \end{cases}
+         $$
+\end{enumerate}
+Note that it takes $\lceil \log c \rceil$ bits to guess an index and 2 bits for the second step. In total, $\nf \leq \log c + 3$.
+
+The first inequality can be proved in a similar way as the deterministic communication complexity version. Fix a nondeterministic protocol for $f$ with cost $\nf$. Let
+$$
+R_l = \cbrac{ (x,y)\ \mathrm{such\ that\ leaf}\ l\ \mathrm{is\ reachable\ on\ input}\ (x,y) }.
+$$
+
+\end{proof}
+
+
+\paragraph{Deterministic vs. Nondeterministic complexity}
+Let us introduce some relationships between deterministic and nondeterministic complexities. The results here are quite surprising when constrasted with similar conjectures in computational complexity. Indeed, as far as communication complexity is concerned, the gap between deterministic and nondeterministic complexities is exponentially large. Moreover, we also know examples where the gap is precisely that big.
+
+\begin{theorem}
+\label{thm:det_vs_nondet}
+For all functions $f$,
+$$
+\nf \leq \df \leq 2^{\nf} + 1.
+$$
+\end{theorem}
+\begin{proof}
+The first inequality is trivial and we have seen it before. The second inequality is striking. Let us prove it below. As usual, let $c = \cf$ and let $R_1, \ldots, R_c$ be rectangles that form a 1-cover. Here is a deterministic protocol for computing $f(x,y)$.
+\begin{enumerate}
+    \item Alice sends Bob, $b_1, \ldots, b_c$ where each $b_i$ is 1 if $x \in R_i$ and zero otherwise.
+    \item Bob outputs
+        $$
+            \begin{cases}
+            1 & \mathrm{if}\ y \in R_l\ \mathrm{and}\ b_l = 1;\\
+            0 & \mathrm{else.}
+            \end{cases}
+         $$
+\end{enumerate}
+It is clear that the cost of this protocol is $c$ bits for step 1 and 1 bit for step 2, i.e.,
+$$
+\df \leq c+1 \leq 2^{\nf} + 1.
+$$
+\end{proof}
+
+\begin{remark}
+Thm.~\ref{thm:det_vs_nondet} is tight on both inequalities. We have shown before that $D(\nEQ_n) = n+1$, Alice simply sends her entire input. On the other hand, the nondeterministic complexity of this is $C(\nEQ_n) = \lceil \log n \rceil + 2$, we guess the index of the errant element in the two strings. This shows that
+$$
+D(f) \geq \Omega \rbrac{2^\nf}; \qquad f = \nEQ_n.
+$$
+On the other hand, consider $f = \EQ_n$, for which we know that $\df = n+1$. It can be shown using the fooling set method that certificate for $\EQ_n$ is at least $2^n$ bits long, which implies $\nf \geq n$.
+\end{remark}
+
+Observe that $\df = \dnf$, Alice and Bob simply output the opposite of what they would have given for $(x,y)$ after executing the protocol. However, $\nf$ and $\nnf$ are vastly different. While the gap between $\df$ and $\nf$ can be exponential as shown in Thm.~\ref{thm:det_vs_nondet}, we have the following remarkable result that
+$$
+\df \leq 2 \nf \nnf.
+$$
+We will prove this result in the next lecture.
 
 \bibliographystyle{abbrv}
 \bibliography{lec5}
