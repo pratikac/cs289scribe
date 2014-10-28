@@ -94,7 +94,7 @@ Note that we have already proved the first inequality of the conjecture in previ
 $$
 \df \leq \rk_\reals (\mf) + 1
 $$
-which is an exponentially-worse upper bound than what the conjecture claims.
+which is an exponentially-worse upper bound than what the conjecture predicts.
 \end{remark}
 
 Let us introduce the following theorem which quantifies the above discussion.
@@ -124,9 +124,9 @@ h(z_1, z_2, z_3) =
 0 & \quad \mathrm{otherwise}.
 \end{cases}
 $$
-Define a recursive function $H_d$ as shown in Fig.~\ref{fig:H_d}. To construct $H_d$, compose $h$ with itself $d$ times. In more cumbersome notation,
+Define a recursive function $H_d$ as shown in Fig.~\ref{fig:H_d}. To construct $H_d$, compose $h$ with itself $d$ times. In more cumbersome notation, for $d > 1$
 $$
-H_d = h(H_{d-1}, H_{d-1}, H_{d-1}); \qquad H_0 = h.
+H_d = h(H_{d-1}, H_{d-1}, H_{d-1}); \qquad H_1 = h.
 $$
 $H_d$ thus has $3^d$ leaves.
 
@@ -146,11 +146,13 @@ H_d(z_1, z_2, \ldots, z_{3^d}) =
 \mathrm{don't\ care} & \quad \mathrm{otherwise}.
 \end{cases}
 $$
-Let $f(x,y) = H_d(x \aand y)$, i.e., the length of the inputs of Alice and Bob, $n = 3^d$. Note that this is the set-disjointness problem, which is a prime example for a number of cornerstone results in communication complexity. We will see that the the rank lower bound implies that $\df \geq \Omega(3^d)$ for $f = H_d$.
+Let $f(x,y) = H_d(x \aand y)$, i.e., the length of the inputs of Alice and Bob, $n = 3^d$. To prove this theorem we will use a result which we have not proved yet. The disjointness problem $\DISJ_n$ is really one of the cornerstones in the theory communication complexity and plays a large role in deriving important results. Well, in any case, we use the fact that
+$$
+D(\DISJ_n) \geq \Omega(n) = \Omega(3^d),
+$$
+which can be proved using the fooling-set method. See~\cite{chattopadhyay2010story} for a wonderful introduction to the disjointness problem.
 
-To prove this theorem we will use a result which we have not proved yet, viz., for the disjointness problem $\DISJ_n$. This problem is really one of the cornerstones in the theory communication complexity and plays a large role in deriving important results. Well, in any case, we use the fact that $\df \geq \Omega(n) = \Omega(3^d)$ if $f = \DISJ_n$, proved by Razborov~\cite{razborov1992distributional}.
-
-Why do we expect $\rk (\mf)$ to be low? Note that the degree of $h$ is 2, i.e., the degree of $H_d$ which is just $h$ composed $d$ times, is $2^d$. $h$ does not have full-degree, viz., 3.
+Why should we expect $\rk (\mf)$ to be low? The answer is that because the degree of $h$ is just 2 instead of the full-degree, which'd be 3. Thereby, the degree of $H_d$ which is just $h$ composed $d$ times with itself, is at most $2^d$.
 
 \begin{proposition}
 If $H_d = \sum_S c_S\ z_S$ where $z_S$ are monomials and $c_S$ are their coefficients ($S$ runs over all subsets of $\cbrac{1, \ldots, n}$), the rank $\rk (\mf)$ is at most the number of monomials $z_S$ that make up $H_d$, i.e.,
@@ -164,7 +166,7 @@ Note that
     \mf &= \sqbrac{H_d \rbrac{(x_1, y_1), \ldots, (x_n, y_n)}}\\
     &= \sum_k \sqbrac{\sum_S c_S M_S},
 \end{align*}
-where $M_S$ is the matrix defined by $M_S(x,y) = \prod_{i \in S}\ x_i \cdot y_i$. The entries of $M_S$ where $i \notin S$ or $j \notin S$ are zero. Now for every set $S$, the rank of $M_S$ is just 1. Using the rank inequalities, we can see that the rank $\rk \mf$ is bounded above by the number of non-zero monomials of $f$.
+where $M_S$ is the matrix defined by $M_S(x,y) = \prod_{i \in S}\ x_i \cdot y_i$. The entries of $M_S$ where either of the row or column do not lie in $S$ are zero. Now for every set $S$, the rank of $M_S$ is just 1. Using the rank inequalities, we can see that the rank $\rk (\mf)$ is bounded above by the number of non-zero monomials of $f$.
 \end{proof}
 
 \begin{proposition}
@@ -197,11 +199,11 @@ A key takeaway from the development of this theorem is that rank bound is a very
 
 \section{Non-deterministic communication complexity}
 
-Let us now introduce nondeterministic communication complexity. This was first discovered while analyzing the complexity of fabrication of large-scale digital circuits for various arithmetic tasks~\cite{lipton1981lower}. In the next few classes, we will explore the power of nondeterminism and contrast it with deterministic communication complexity. This model is analogous to the nondeterministic computational complexity and can be thought of as a ``proof system''. Roughly, nondeterministic communication complexity of a function $f$, denoted by $\nf$, is the smallest number of bits that can be used to convince both Alice and Bob that $f(x,y) = 1$. This is conceptually similar to $\mathrm{NP}$ languages, given the polynomial-length certificate, we can efficiently check if some input $x \in L \in \mathrm{NP}$.
+Let us now introduce nondeterministic communication complexity. This was first discovered while analyzing the complexity of fabrication of large-scale digital circuits for various arithmetic tasks~\cite{lipton1981lower}. In the next few classes, we will explore the power of nondeterminism and contrast it with deterministic communication complexity. This model is analogous to nondeterministic \emph{computational} complexity and can be thought of as a ``proof system''. Roughly, nondeterministic communication complexity of a function $f$, denoted by $\nf$, is the smallest number of bits that can be used to convince both Alice and Bob that $f(x,y) = 1$. This is conceptually similar to $\mathrm{NP}$ languages, given the polynomial-length certificate, we can efficiently check if some input $x \in L \in \mathrm{NP}$.
 
 \subsection{The model}
 
-We know that deterministic protocols are binary trees. Each node of the tree is labeled either by a function $a_v : \X \to \cbrac{0,1}$ which corresponds to the bit sent by Alice or by a function $b_v : \Y \to \cbrac{0,1}$ which corresponds to Bob's bit. In addition to this, nondeterministic protocols have a special kind of node, a ``guess node'' which we will denote by $g_v \in \cbrac{0,1}$. At any point in the protocol execution, Alice and Bob can get together and ``publicly'' guess a value of $g_v \in \cbrac{0,1}$ upon which the protocol either moves left or right respectively in the protocol tree. An example nondeterministic protocol tree thus looks like the one shown in Fig.~\ref{fig:nondet_protocol_tree}. Note that while deterministic protocol trees have a unique path in the binary tree for a given pair of inputs $x, y$, the same is not true for nondeterministic protocols. Indeed, the power of nondeterminism lies in the fact that Alice and Bob and periodically guess together and branch.
+We know that deterministic protocols are binary trees. Each node of the tree is labeled either by a function $a_v : \X \to \cbrac{0,1}$ which corresponds to the bit sent by Alice or by a function $b_v : \Y \to \cbrac{0,1}$ which corresponds to Bob's bit. In addition to this, nondeterministic protocols have a special kind of node, a ``guess node'' which we will denote by $g_v \in \cbrac{0,1}$. At any point in the protocol execution, Alice and Bob can get together and ``publicly'' guess a value of $g_v \in \cbrac{0,1}$ upon which the protocol either moves left or right respectively in the protocol tree. An example nondeterministic protocol tree thus looks like the one shown in Fig.~\ref{fig:nondet_protocol_tree}. Note that while deterministic protocol trees have a unique path in the binary tree for a given pair of inputs $x, y$, the same is not true for nondeterministic protocols. Indeed, the power of nondeterminism lies in the fact that Alice and Bob can periodically guess together and branch.
 
 \begin{figure}
 \centering
@@ -237,7 +239,7 @@ $$
 $$
 \end{definition}
 \begin{remark}
-Note that we are still following the usual definition for \emph{cost of a protocol}, it is simply the depth of the nondeterministic protocol tree. Also, note that coin tosses are costly, if we allow zero-cost coin tosses, any function $f$ will have a nondeterministic communication complexity of exactly $2$ bits. The following protocol achieves this --- Upon input $x, y$, Alice and Bob together guess some $x' \in \X$. Output $1$ if $x' = x$ and $f(x', y) = 1$ and zero otherwise. Note that Alice can check if $x' = x$, send the result to Bob who in turn computes the value of $f(x', y)$. This protocol has a cost of exactly 2 bits if Alice and Bob can guess $x'$ without any cost!
+Note that we are still following the usual definition for \emph{cost of a protocol}, it is simply the depth of the nondeterministic protocol tree. Also, note that coin tosses are costly, if we allow zero-cost coin tosses, any function $f$ will have a nondeterministic communication complexity of exactly $2$ bits. The following protocol achieves this --- Upon input $x, y$, Alice and Bob together guess some $x' \in \X$. Output $1$ if $x' = x$ and $f(x', y) = 1$ and zero otherwise. Note that Alice can check if $x' = x$, send the result to Bob who in turn computes the value of $f(x', y)$. This protocol has a cost of exactly 2 bits if Alice and Bob can guess $x'$ without any cost! Note that it however takes $n$ bits to guess a random $x'$ and we get the trivial bound $\nf \leq n + 2$ (which is true for any function $f$) using this protocol.
 \end{remark}
 
 \begin{proposition}
@@ -253,7 +255,7 @@ Indeed, any deterministic protocol is also a nondeterministic protocol where Ali
 Admittedly, the above discussion on nondeterministic protocols is rather abstract, let us discuss a few examples which will make the notion much more natural.
 
 \begin{example}
-The first example is the Inequality problem, denoted by $\nEQ_n$. Given two strings $x, y \in \cbrac{0,1}^n$, we need to check if $x \neq y$. The deterministic complexity of doing so is $n+1$ bits, Alice simply sends her input to Bob. Here is a nondeterministic protocol for the same problem.
+The first example is the inequality problem, denoted by $\nEQ_n$. Given two strings $x, y \in \cbrac{0,1}^n$, we need to check if $x \neq y$. The deterministic complexity of doing so is $n+1$ bits, Alice simply sends her input to Bob. Here is a nondeterministic protocol for the same problem.
 \begin{enumerate}
     \item Guess an index $i \in \cbrac{1, \ldots, n}$;
     \item Output
@@ -300,7 +302,7 @@ $$
 \end{definition}
 Note that $R_i$s in the above definition may overlap, we simply require that their union be $f^{-1}(1)$. The following theorem now effectively characterizes the nondeterministic communication complexity in terms of the cover number.
 
-Note that we have not explicitly stated the notion of a rectangle for nondeterministic protocols. There are two ways to see this and they are equivalent. One can simply consider the characteristic matrix $\mf$ and an $f$-monochromatic rectangle $R$ is a set which can be written as a product of two sets $R_X \times R_Y$ where $R_X = \cbrac{ x\ |\ \exists\ y\ \mathrm{s.t.}\ (x,y) \in R}$ and $R_Y = \cbrac{ y\ |\ \exists\ x\ \mathrm{s.t.}\ (x,y) \in R}$. Alternatively, consider two input pairs $(x,y)$ and $(x', y')$. Let the guesses for Alice and Bob for these two pairs be $(z_1, z_2)$ for input $(x,y)$ and $(z_1', z_2')$ for input $(x',y')$ respectively. \pc{If $(x,y), (x',y') \in f^{-1}(1)$, there exist}{}
+Note that we have not explicitly stated the notion of a rectangle for nondeterministic protocols. There are two ways to see this and they are equivalent. One can simply consider the characteristic matrix $\mf$ and an $f$-monochromatic rectangle $R$ is a set which can be written as a product of two sets $R_X \times R_Y$ where $R_X = \cbrac{ x\ |\ \exists\ y\ \mathrm{s.t.}\ (x,y) \in R}$ and $R_Y = \cbrac{ y\ |\ \exists\ x\ \mathrm{s.t.}\ (x,y) \in R}$. Alternatively, consider two input pairs $(x,y)$ and $(x', y')$. Let the guesses for Alice and Bob for these two pairs be $(z_1, z_2)$ for input $(x,y)$ and $(z_1', z_2')$ for input $(x',y')$ respectively. If $(x,y), (x',y') \in f^{-1}(1)$
 
 \begin{theorem}
 For all functions $f$,
