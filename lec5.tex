@@ -164,7 +164,7 @@ $$
 Note that
 \begin{align*}
     \mf &= \sqbrac{H_d \rbrac{(x_1, y_1), \ldots, (x_n, y_n)}}\\
-    &= \sum_k \sqbrac{\sum_S c_S M_S},
+    &= \sum_S c_S M_S,
 \end{align*}
 where $M_S$ is the matrix defined by $M_S(x,y) = \prod_{i \in S}\ x_i \cdot y_i$. The entries of $M_S$ where either of the row or column do not lie in $S$ are zero. Now for every set $S$, the rank of $M_S$ is just 1. Using the rank inequalities, we can see that the rank $\rk (\mf)$ is bounded above by the number of non-zero monomials of $f$.
 \end{proof}
@@ -302,7 +302,7 @@ $$
 \end{definition}
 Note that $R_i$s in the above definition may overlap, we simply require that their union be $f^{-1}(1)$. The following theorem now effectively characterizes the nondeterministic communication complexity in terms of the cover number.
 
-Note that we have not explicitly stated the notion of a rectangle for nondeterministic protocols. There are two ways to see this and they are equivalent. One can simply consider the characteristic matrix $\mf$ and an $f$-monochromatic rectangle $R$ is a set which can be written as a product of two sets $R_X \times R_Y$ where $R_X = \cbrac{ x\ |\ \exists\ y\ \mathrm{s.t.}\ (x,y) \in R}$ and $R_Y = \cbrac{ y\ |\ \exists\ x\ \mathrm{s.t.}\ (x,y) \in R}$. Alternatively, consider two input pairs $(x,y)$ and $(x', y')$. Let the guesses for Alice and Bob for these two pairs be $(z_1, z_2)$ for input $(x,y)$ and $(z_1', z_2')$ for input $(x',y')$ respectively. If $(x,y), (x',y') \in f^{-1}(1)$
+Note that we have not explicitly stated the notion of a rectangle for nondeterministic protocols. There are two ways to see this and they are equivalent. One can simply consider the characteristic matrix $\mf$ and an $f$-monochromatic rectangle $R$ is a set which can be written as a product of two sets $R_X \times R_Y$ where $R_X = \cbrac{ x\ |\ \exists\ y\ \mathrm{s.t.}\ (x,y) \in R}$ and $R_Y = \cbrac{ y\ |\ \exists\ x\ \mathrm{s.t.}\ (x,y) \in R}$. Alternatively, consider two input pairs $(x,y)$ and $(x', y')$. Let the guesses for Alice and Bob for these two pairs be $(z_1, z_2)$ for input $(x,y)$ and $(z_1', z_2')$ for input $(x',y')$ respectively. If $(x,y), (x',y') \in f^{-1}(1)$, the same way that deterministic protocols partition the leaves of the protocol tree into rectangles, the messages that are sent for inputs $(x',y)$ with guesses $(z_1', z_2)$ and $(x,y')$ and guesses $(z_1, z_2')$ are the same. In other words, the path in the protocol tree is the same. Thus, all the inputs $(x,y), (x',y'), (x',y), (x,y')$ reach the same leaf and lie in the same 1-rectangle.
 
 \begin{theorem}
 For all functions $f$,
@@ -346,7 +346,7 @@ $$
 \begin{proof}
 The first inequality is trivial and we have seen it before. The second inequality is striking. Let us prove it below. As usual, let $c = \cf$ and let $R_1, \ldots, R_c$ be rectangles that form a 1-cover. Here is a deterministic protocol for computing $f(x,y)$.
 \begin{enumerate}
-    \item Alice sends Bob, $b_1, \ldots, b_c$ where each $b_i$ is 1 if $x \in R_i$ and zero otherwise.
+    \item Alice sends Bob, $b_1, \ldots, b_c$ where each $b_i$ is 1 if $x \in R_i$ and zero otherwise;
     \item Bob outputs
         $$
             \begin{cases}
