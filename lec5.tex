@@ -328,7 +328,15 @@ The first inequality can be proved in a similar way as the deterministic communi
 $$
 R_l = \cbrac{ (x,y)\ \mathrm{such\ that\ leaf}\ l\ \mathrm{is\ reachable\ on\ input}\ (x,y) }.
 $$
-
+Note that every $R_l$ is a monochromatic rectangle from the discussion preceding the theorem. Different $R_l$s may however overlap due to guess nodes. How should we pick $R_l$s? We look at the labels of the leaf-nodes and take rectangles where the protocol outputs 1. Note that ---
+\begin{enumerate}
+    \item if a leaf $l$ is labeled 1, then $f(R_l) = 1$, else we will have false-positives.
+    \item if $f(x,y) = 1$, then some leaf labeled 1 should be reachable on that input. This implies that all $1$s in the characteristic matrix $\mf$ are covered by rectangles.
+\end{enumerate}
+We therefore have
+$$
+\cf \leq 2^{\# \mathrm{leaves}} \leq 2^{\nf}.
+$$
 \end{proof}
 
 
